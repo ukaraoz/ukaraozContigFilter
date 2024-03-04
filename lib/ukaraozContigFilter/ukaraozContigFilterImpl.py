@@ -51,6 +51,7 @@ class ukaraozContigFilter:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_ukaraozContigFilter
+        print ("Input parameter",params['parameter_1'])
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': {'objects_created':[],
                                                 'text_message': params['parameter_1']},
@@ -59,6 +60,7 @@ class ukaraozContigFilter:
             'report_name': report_info['name'],
             'report_ref': report_info['ref'],
         }
+        print ("report_name", output['report_name'])
         #END run_ukaraozContigFilter
 
         # At some point might do deeper type checking...
