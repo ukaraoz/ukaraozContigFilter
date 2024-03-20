@@ -1,0 +1,178 @@
+# -*- coding: utf-8 -*-
+#BEGIN_HEADER
+import logging
+import os
+import sys
+import shutil
+import subprocess
+import uuid
+import re
+import functools
+import pprint
+
+from installed_clients.KBaseReportClient import KBaseReport
+from installed_clients.DataFileUtilClient import DataFileUtil
+from installed_clients.WorkspaceClient import Workspace
+from installed_clients.MetagenomeUtilsClient import MetagenomeUtils
+from installed_clients.AssemblyUtilClient import AssemblyUtil
+
+from .util.debug import dprint
+from .impl.config import app, reset_globals
+
+#END_HEADER
+
+
+class ukaraozContigFilter:
+    '''
+    Module Name:
+    ukaraozContigFilter
+
+    Module Description:
+    A KBase module: ukaraozContigFilter
+    '''
+
+    ######## WARNING FOR GEVENT USERS ####### noqa
+    # Since asynchronous IO can lead to methods - even the same method -
+    # interrupting each other, you must be *very* careful when using global
+    # state. A method could easily clobber the state set by another while
+    # the latter method is running.
+    ######################################### noqa
+    VERSION = "0.0.1"
+    GIT_URL = "https://github.com/ukaraoz/ukaraozContigFilter.git"
+    GIT_COMMIT_HASH = "3e21317f32444715ae6152484604c2f2936f9bab"
+
+    #BEGIN_CLASS_HEADER
+    #END_CLASS_HEADER
+
+    # config contains contents of config file in a hash or None if it couldn't
+    # be found
+    def __init__(self, config):
+        #BEGIN_CONSTRUCTOR
+        #self.callback_url = os.environ['SDK_CALLBACK_URL']
+        callback_url = os.environ['SDK_CALLBACK_URL']
+        #self.shared_folder = config['scratch']
+        shared_folder = config['scratch']
+        workspace_url = config['workspace-url']
+        
+        reset_globals()
+        app.update({ 
+            'shared_folder': config['scratch'], 
+            'ws': Workspace(workspace_url),
+            'dfu': DataFileUtil(callback_url),
+            'mgu': MetagenomeUtils(callback_url, service_ver='dev'),
+            'au': AssemblyUtil(callback_url),
+            'kbr': KBaseReport(callback_url),
+        })
+        logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
+                            level=logging.INFO)
+        #END_CONSTRUCTOR
+        pass
+
+
+    def run_ukaraozContigFilter(self, ctx, params):
+        """
+        This example function accepts any number of parameters and returns results in a KBaseReport
+        :param params: instance of mapping from String to unspecified object
+        :returns: instance of type "ReportResults" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_ukaraozContigFilter
+
+        # params hold
+        # 'input_refs': '72942/39/1'
+        # 'output_name': 'test'
+        # 'variance_interguild': 70
+        # 'workspace_name': 'test_ContigFilter_1710549679759'
+        # 'workspace_id'
+
+        logging.info(params)
+        params = Params(params)
+
+        app.update({
+            'run_dir': os.path.join(app.shared_folder, 'run_microtrait_' + str(uuid.uuid4())), # folder dedicated to this API-method run
+            'params': params,
+        })
+        os.mkdir(app.run_dir)
+
+        #
+        ##
+        ### directories
+        ####
+        #####
+
+        microtrait_dir = os.path.join(app.run_dir, 'microtrait_dir')
+        report_dir = os.path.join(app.run_dir, 'report')
+        app.update(
+            dict(
+                microtrait_dir=microtrait_dir,
+                report_dir=report_dir,
+            )
+        )
+
+        #
+        ##
+        ### load files, obj
+        ####
+        #####
+
+        #objs = load_objs(params['obj_refs'])
+
+        ref = params['obj_refs']
+        temp = app.ws.get_object_info3({
+            'objects': [{'ref': ref}]
+        })
+        #type_ = app.ws.get_object_info3({
+        #    'objects': [{'ref': ref}]
+        #})['infos'][0][2]
+        print("---START---", "\n")
+        pprint.pprint(temp)
+        print("---END---", "\n")
+        #print("---START Print params:---", "\n")
+        #pprint.pprint(params)
+        #print(params['input_refs'])
+
+        # type_ = app.ws.get_object_info3({
+        #     'objects': [{'ref': ref}]
+        # })['infos'][0][2]
+        #elif type_.startswith(Genome.TYPE):
+        #    obj = Genome(ref)
+
+
+        print("---END print params:---", "\n")
+
+        print("file_safe_ref", params['input_refs'].replace('/', '.').replace(';', '_'), "\n")
+        #print ("input_refs: ",params['input_refs'], "\n")
+        #print ("variance_interguild: ",params['variance_interguild'], "\n")
+        #print ("output_name: ",params['output_name'], "\n")
+
+        report = KBaseReport(self.callback_url)
+        report_info = report.create({'report': {'objects_created':[],
+                                                'text_message': params['input_refs']},
+                                                'workspace_name': params['workspace_name']})
+        output = {
+            'report_name': report_info['name'],
+            'report_ref': report_info['ref'],
+        }
+        #print ("report_name", output['report_name'])
+
+        # assembly_ref = "170460/216/1"
+        # genome_ref = "170460/217/1"
+        #END run_ukaraozContigFilter
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError('Method run_ukaraozContigFilter return value ' +
+                             'output is not type dict as required.')
+        # return the results
+        return [output]
+    def status(self, ctx):
+        #BEGIN_STATUS
+        returnVal = {'state': "OK",
+                     'message': "",
+                     'version': self.VERSION,
+                     'git_url': self.GIT_URL,
+                     'git_commit_hash': self.GIT_COMMIT_HASH}
+        #END_STATUS
+        return [returnVal]
