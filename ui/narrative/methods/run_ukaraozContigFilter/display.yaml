@@ -1,14 +1,14 @@
 #
 # define display information
 #
-name: Contig Filter
+name: microTrait - Extract microbial traits and define microbial guilds
 
 tooltip: |
-    Filters contigs based on length
+    Extract microbial traits and define microbial guilds from your assemblies, isolate genomes, or MAGs.
 
 screenshots: []
 
-icon: icon.png
+icon: microtrait_appicon.png
 
 #
 # define a set of similar apps that might be useful to the user
