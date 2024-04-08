@@ -20,6 +20,7 @@ from .util.debug import dprint
 from .util.microtrait import get_microtrait_datatables
 from .impl.config import app, reset_globals
 from .impl.params import Params
+from .impl import report
 #END_HEADER
 
 
@@ -40,7 +41,7 @@ class ukaraozContigFilter:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "https://github.com/ukaraoz/ukaraozContigFilter.git"
-    GIT_COMMIT_HASH = "a71512e91bcec9d0ae7a9f17ac3218e1dcd7be04"
+    GIT_COMMIT_HASH = "857d6df2acfbbe153eba266c095d13e4feece496"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -87,7 +88,6 @@ class ukaraozContigFilter:
         # 'workspace_name': 'test_ContigFilter_1710549679759'
         # 'workspace_id'
 
-        print("---FIRST---", "\n")
         logging.info(params)
         params = Params(params)
         #pprint.pprint(params)
@@ -175,27 +175,55 @@ class ukaraozContigFilter:
             pathsfile.write('\n'.join(pooled_fasta_fp_l))
         print("pooled_fasta_pathsfile:", pooled_fasta_pathsfile, "\n")
 
+
+        #
+        ##
+        ### run dRep
+        ####
+        #####
+        #dRep_params_l = params.get_non_default_tool_params()
+        microtrait_cmd = ([
+            '/usr/local/lib/R/site-library/microtrait/run_microtrait.R',
+            pooled_fasta_pathsfile,
+            microtrait_dir,
+            'dataset',
+            '4',
+            "--define_guilds",
+            "--verbose"
+        ])
+        microtrait_cmd = ' '.join(microtrait_cmd)
+        print("microtrait_cmd:", microtrait_cmd, "\n")
+
+        try:
+            run_check(microtrait_cmd)
+
+        except Exception as e:
+            raise(e)
+
         #pp.pprint(dir(obj))
         #pp.pprint(obj.ref)
         #pprint.pprint(temp)
-        test_dir = "/kb/module/test/data/rhizosphere"
+        test_dir = "/kb/module/test/data/microtrait/rhizosphere"
         shutil.copytree(test_dir, microtrait_dir)
 
         test_figures_dir = os.path.join(test_dir, 'figures')
         test_datatables_dir = os.path.join(test_dir, 'datatables')
-        test_microtraittemp_dir = os.path.join(test_dir, 'microtraittemp')
+        test_microtraittemp_dir = os.path.join(test_dir, 'microtrait_out')
 
         test_figure_files = os.listdir(test_figures_dir)
         test_figure_files_fp = [os.path.join(test_figures_dir, fn) for fn in os.listdir(test_figures_dir)]
-        for fp in test_figure_files_fp:
-            print(fp, end = '\n')
-        print("----------\n")
+        #for fp in test_figure_files_fp:
+        #    print(fp, end = '\n')
+        #print("----------\n")
         test_datatables_files = os.listdir(test_datatables_dir)
         test_datatables_files_fp = [os.path.join(test_datatables_dir, fn) for fn in os.listdir(test_datatables_dir)]
-        for fp in test_datatables_files_fp:
-            print(fp, end = '\n')
-        print("\n\n")
-        print("---END---", "\n")
+        #for fp in test_datatables_files_fp:
+        #    print(fp, end = '\n')
+        #print("\n\n")
+        print("microtrait_dir:", microtrait_dir, "\n\n\n\n")
+        microtrait_dir_files_fp = [os.path.join(microtrait_dir, 'datatables', fn) for fn in os.listdir(os.path.join(microtrait_dir, 'datatables'))]
+        for fp in microtrait_dir_files_fp:
+            print("$", fp, "$", end = '\n')
        
         
         ##type_ = app.ws.get_object_info3({
@@ -225,20 +253,77 @@ class ukaraozContigFilter:
         #report = KBaseReport(self.callback_url)
         #report = app.kbr
 
+
+        #
+        ##
+        ### html
+        ####
+        #####
+        #pprint.pprint(app)
+        hb = report.HTMLBuilder(microtrait_dir, report_dir)
+        report_fp = hb.write()
+        #print("report_fp: ", report_fp, "\n")
+
         # file_links/html_links
         ## 1. shock_id: (required string) Shock ID for a file. Not required if path is present.
         ## 2. path: (required string) Full file path for a file (in scratch). Not required if shock_id is present.
         ## 3. name: (required string) name of the file
         ## 4. description: (optional string) Readable description of the file
         ## 5. template: (optional dictionary) A dictionary with keys template_file (required) and template_data_json (optional), specifying a template and accompanying data to be rendered to generate an output file.
-        output_files = get_microtrait_datatables(os.path.join(microtrait_dir, 'datatables'))
-        file_links = [value for key, value in output_files.items()
-                        if value['path'] is not None]
+        #output_files = get_microtrait_datatables(os.path.join(microtrait_dir, 'datatables'))
+        #file_links = [value for key, value in output_files.items() 
+        #    if value['path'] is not None]
+        #pprint.pprint(file_links)
 
-        #html_links = [{
-        #    'path': report_dir,
-        #    'name': os.path.basename(report_fp),
-        #}]
+        file_links = [
+        {
+            'path': os.path.join(microtrait_dir, 'datatables', 'trait_matrixatgranularity3.txt'),
+            'name': 'Microtrait trait matrix at granularity level 3 in tabular format',
+            'label': 'trait_matrixatgranularity3.txt',
+            'description': 'Microtrait trait matrix at granularity level 3 in tabular format'
+        },
+        {
+            'path': os.path.join(microtrait_dir, 'datatables', 'guild2traitprofile.txt'),
+            'name': 'Guild to trait profile in tabular format',
+            'label': 'guild2traitprofile.txt',
+            'description': 'Guild to trait profile in tabular format'
+        },
+        {
+            'path': os.path.join(microtrait_dir, 'datatables', 'trait_matrixatgranularity2.txt'),
+            'name': 'Microtrait trait matrix at granularity level 2 in tabular format',
+            'label': 'trait_matrixatgranularity2.txt',
+            'description': 'Microtrait trait matrix at granularity level 2 in tabular format'
+        },
+        {
+            'path': os.path.join(microtrait_dir, 'datatables', 'trait_matrixatgranularity1.txt'),
+            'name': 'Microtrait trait matrix at granularity level 1 in tabular format',
+            'label': 'trait_matrixatgranularity1.txt',
+            'description': 'Microtrait trait matrix at granularity level 1 in tabular format'
+        },
+        {
+            'path': os.path.join(microtrait_dir, 'datatables', 'rule_matrix.txt'),
+            'name': 'Microtrait rules output in tabular format',
+            'label': 'rule_matrix.txt',
+            'description': 'Microtrait rules output in tabular format'
+        },
+        {
+            'path': os.path.join(microtrait_dir, 'datatables', 'hmm_matrix.txt'),
+            'name': 'Microtrait hmm output in tabular format',
+            'label': 'hmm_matrix.txt',
+            'description': 'Microtrait hmm output in tabular format'
+        },
+        {
+            'path': os.path.join(microtrait_dir, 'datatables', 'genome2guild.txt'),
+            'name': 'Genome to guild table',
+            'label': 'genome2guild.txt',
+            'description': 'Genome to guild table'
+        }]
+
+        print("AAAAA-", os.path.basename(report_fp), "\n")
+        html_links = [{
+            'path': report_dir,
+            'name': os.path.basename(report_fp),
+        }]
 
         report_text = 'Ran microtrait, results are packaged below. \n\n'
         report_params = {
@@ -250,10 +335,10 @@ class ukaraozContigFilter:
             'message': report_text,
             #  direct_html_link_index: 
             ##  (optional integer) index in html_links that you want to use as the main/default report view
-            #'direct_html_link_index': 0,
+            'direct_html_link_index': 0,
             #  html_links: 
             ##  (optional list of dicts) HTML files to attach and display in the report (see the additional information below)
-            #'html_links': html_links,        
+            'html_links': html_links,        
             # file_links: 
             ##  (optional list of dicts) files to attach to the report (see the valid key/vals below)
             'file_links': file_links,         

@@ -1,0 +1,2 @@
+/Users/ukaraoz/Work/kbase/ukaraozContigFilter/test/data/microtrait/rhizosphere_pooledfasta/72942.212.1_72942.10.1_Streptomyces_HA41_2561511090.assembly
+/Users/ukaraoz/Work/kbase/ukaraozContigFilter/test/data/microtrait/rhizosphere_pooledfasta/72942.212.1_72942.11.1_Solirubrobacterales_HD59_2558860160.assembly
