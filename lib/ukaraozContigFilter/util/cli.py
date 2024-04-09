@@ -15,9 +15,9 @@ def run_check(cmd: str):
 
     logging.info('Took %.2fmin' % ((time.time() - t0)/60))
 
-    if completed_proc.returncode != 0:
+    if completed_proc.returncode != 1:
         raise NonZeroReturnException(
-            "Command `%s` exited with non-zero return code `%d`. "
+            "Command `%s` exited with unsuccessful return code `%d`. "
             "Check logs for more details" %
             (cmd, completed_proc.returncode)
         )

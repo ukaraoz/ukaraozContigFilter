@@ -42,7 +42,7 @@ class ukaraozContigFilter:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "https://github.com/ukaraoz/ukaraozContigFilter.git"
-    GIT_COMMIT_HASH = "a0b6d1d33ce29a956e08b944d525751290d322f7"
+    GIT_COMMIT_HASH = "cd51513f7d07bccbd0db0b1798c0ef7b4c3a3b48"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
