@@ -9,6 +9,7 @@ import uuid
 import re
 import functools
 import pprint
+import multiprocessing
 
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
@@ -42,7 +43,7 @@ class ukaraozContigFilter:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "https://github.com/ukaraoz/ukaraozContigFilter.git"
-    GIT_COMMIT_HASH = "cd51513f7d07bccbd0db0b1798c0ef7b4c3a3b48"
+    GIT_COMMIT_HASH = "c93f67aee4afd757c822cabc259531d065f8d6b0"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -198,9 +199,10 @@ class ukaraozContigFilter:
         microtrait_cmd = ' '.join(microtrait_cmd)
         print("microtrait_cmd:", microtrait_cmd, "\n")
 
+        #print("NUMBER OF CORES: ", multiprocessing.cpu_count(), "\n\n\n")
+
         try:
             run_check(microtrait_cmd)
-
         except Exception as e:
             raise(e)
 

@@ -43,7 +43,7 @@ class ukaraozContigFilter:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "https://github.com/ukaraoz/ukaraozContigFilter.git"
-    GIT_COMMIT_HASH = "08386304da48e73cf1dc6e424a2714d109f1db80"
+    GIT_COMMIT_HASH = "c93f67aee4afd757c822cabc259531d065f8d6b0"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -184,6 +184,7 @@ class ukaraozContigFilter:
         ####
         #####
         #dRep_params_l = params.get_non_default_tool_params()
+        ### "--read_from_rds",
         test_dir = "/kb/module/test/data/microtrait/rhizosphere"
         shutil.copytree(os.path.join(test_dir, 'precomputed'), os.path.join(microtrait_dir, 'precomputed'))
         microtrait_cmd = ([
@@ -191,9 +192,8 @@ class ukaraozContigFilter:
             pooled_fasta_pathsfile,
             microtrait_dir,
             'dataset',
-            '50',
+            '4',
             "--define_guilds",
-            "--read_from_rds",
             "--verbose"
         ])
         microtrait_cmd = ' '.join(microtrait_cmd)
