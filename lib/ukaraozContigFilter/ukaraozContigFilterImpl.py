@@ -191,7 +191,7 @@ class ukaraozContigFilter:
             pooled_fasta_pathsfile,
             microtrait_dir,
             'dataset',
-            '4',
+            '50',
             "--define_guilds",
             "--read_from_rds",
             "--verbose"
@@ -199,19 +199,18 @@ class ukaraozContigFilter:
         microtrait_cmd = ' '.join(microtrait_cmd)
         print("microtrait_cmd:", microtrait_cmd, "\n")
 
-        print("NUMBER OF CORES: ", multiprocessing.cpu_count(), "\n\n\n")
+        #print("NUMBER OF CORES: ", multiprocessing.cpu_count(), "\n\n\n")
 
-        #try:
-        #    run_check(microtrait_cmd)
-#
-        #except Exception as e:
-        #    raise(e)
+        try:
+            run_check(microtrait_cmd)
+        except Exception as e:
+            raise(e)
 
         #pp.pprint(dir(obj))
         #pp.pprint(obj.ref)
         #pprint.pprint(temp)
         test_dir = "/kb/module/test/data/microtrait/rhizosphere"
-        shutil.copytree(test_dir, microtrait_dir)
+        #shutil.copytree(test_dir, microtrait_dir)
 
         ## test_figures_dir = os.path.join(test_dir, 'figures')
         ## test_datatables_dir = os.path.join(test_dir, 'datatables')
