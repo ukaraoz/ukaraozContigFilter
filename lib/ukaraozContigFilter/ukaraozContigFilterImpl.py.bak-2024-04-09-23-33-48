@@ -43,7 +43,7 @@ class ukaraozContigFilter:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "https://github.com/ukaraoz/ukaraozContigFilter.git"
-    GIT_COMMIT_HASH = "e195a0eb266b1e822eb5cb3c214ad53c92428d6d"
+    GIT_COMMIT_HASH = "c93f67aee4afd757c822cabc259531d065f8d6b0"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -194,7 +194,6 @@ class ukaraozContigFilter:
             'dataset',
             '4',
             "--define_guilds",
-            "--read_from_rds",
             "--verbose"
         ])
         microtrait_cmd = ' '.join(microtrait_cmd)
